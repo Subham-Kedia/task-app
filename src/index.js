@@ -5,7 +5,7 @@ const connect = require("./db/mongoose.js")
 const app = express()
 const PORT = process.env.PORT || 3000
 
-connect()
+// connect()
 
 app.get("/", (req, res) => {
     res.send("Welcome to Notes App")
