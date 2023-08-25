@@ -7,6 +7,10 @@ const PORT = process.env.PORT || 3000
 
 connect()
 
+app.get("/", (req, res) => {
+    res.send("Welcome to Notes App")
+})
+
 app.get("/tasks", (req, res) => {
   Task.find()
     .then((tasks) => {

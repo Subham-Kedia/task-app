@@ -10,7 +10,7 @@ const connect = async () => {
     await mongoose.connect(connectionURL, { dbName: "test" })
     console.log("mongoose connected")
   } catch (err) {
-    console.log(err)
+    console.log(err.message)
   }
 }
 
