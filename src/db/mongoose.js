@@ -1,10 +1,12 @@
 const mongoose = require("mongoose")
 
-const connectionURL =
-  "mongodb+srv://Subham_Kedia:lic6dxocH7ykP5Jo@cluster0.ei6okkf.mongodb.net/?retryWrites=true&w=majority"
+require("dotenv").config()
+
+const connectionURL = `mongodb+srv://${process.env.MONGODB_HOST}:${process.env.MONGODB_PASSWORD}@cluster0.ei6okkf.mongodb.net/?retryWrites=true&w=majority`
 
 const connect = async () => {
   try {
+    console.log(connectionURL)
     await mongoose.connect(connectionURL, { dbName: "test" })
     console.log("mongoose connected")
   } catch (err) {
@@ -12,4 +14,4 @@ const connect = async () => {
   }
 }
 
-connect()
+module.exports = connect
