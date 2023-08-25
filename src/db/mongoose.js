@@ -2,10 +2,10 @@
 
 require("dotenv").config()
 
-// const connectionURL = `mongodb+srv://${process.env.MONGODB_HOST}:${process.env.MONGODB_PASSWORD}@cluster0.ei6okkf.mongodb.net/?retryWrites=true&w=majority`
+const connectionURL = `mongodb+srv://${process.env.MONGODB_HOST}:${process.env.MONGODB_PASSWORD}@cluster0.ei6okkf.mongodb.net/?retryWrites=true&w=majority`
 
 const connect = () => {
-  const str = "HOST is" + process.env.MONGODB_HOST
+  const str = "HOST is" + connectionURL
   return str
   // try {
   //   console.log(connectionURL)
