@@ -1,6 +1,6 @@
 const express = require("express")
 // const { Task } = require("./models/taskModel.js")
-// const connect = require("./db/mongoose.js")
+const connect = require("./db/mongoose.js")
 
 const app = express()
 const PORT = process.env.PORT || 3000
