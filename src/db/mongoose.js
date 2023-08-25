@@ -5,7 +5,7 @@ require("dotenv").config()
 // const connectionURL = `mongodb+srv://${process.env.MONGODB_HOST}:${process.env.MONGODB_PASSWORD}@cluster0.ei6okkf.mongodb.net/?retryWrites=true&w=majority`
 
 const connect = async () => {
-  console.log("hello")
+  return process.env.MONGODB_HOST
   // try {
   //   console.log(connectionURL)
   //   await mongoose.connect(connectionURL, { dbName: "test" })
