@@ -4,8 +4,28 @@ const auth = require("../middleware/auth")
 const Task = require("../models/taskModel")
 
 taskRouter.get("/getAll", auth, async (req, res) => {
+  const { status, skip, limit, sortField, sortOrder } = req.query
+
+  const match = {}
+  if (status) match.status = status === "true"
+
+  const options = {}
+  if (!isNaN(parseInt(limit))) options.limit = parseInt(limit)
+  if (!isNaN(parseInt(skip))) options.skip = parseInt(skip)
+
+  if (sortField && sortOrder) {
+    const sort = {
+      [sortField]: parseInt(sortOrder),
+    }
+    options.sort = sort
+  }
+
   try {
-    await req.user.populate("tasks")
+    await req.user.populate({
+      path: "tasks",
+      match,
+      options,
+    })
     res
       .status(200)
       .send({ tasks: req.user.tasks, message: "Task Fetched Successfully" })
