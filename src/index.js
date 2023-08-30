@@ -1,9 +1,9 @@
 const express = require("express")
+require("dotenv").config()
 // require("./db/mongoose")
 // const routers = require("./routers")
-const mongoose = require("mongoose")
+import mongoose, {Mongoose} from "mongoose"
 
-require("dotenv").config()
 
 const connectionURL = `mongodb+srv://${process.env.MONGODB_HOST}:${process.env.MONGODB_PASSWORD}@cluster0.ei6okkf.mongodb.net/?retryWrites=true&w=majority`
 
