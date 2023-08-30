@@ -21,7 +21,7 @@ const PORT = process.env.PORT || 3000
 
 app.use(express.json())
 app.get("/", (req, res) => {
-  res.send("hello world")
+  res.send(`hello world, ${connectionURL}`)
 })
 // app.use(routers)
 
