@@ -1,16 +1,16 @@
-const mongoose = require("mongoose")
+// const mongoose = require("mongoose")
 
-require("dotenv").config()
+// require("dotenv").config()
 
-const connectionURL = `mongodb+srv://${process.env.MONGODB_HOST}:${process.env.MONGODB_PASSWORD}@cluster0.ei6okkf.mongodb.net/?retryWrites=true&w=majority`
+// const connectionURL = `mongodb+srv://${process.env.MONGODB_HOST}:${process.env.MONGODB_PASSWORD}@cluster0.ei6okkf.mongodb.net/?retryWrites=true&w=majority`
 
-const connect = async () => {
-  try {
-    await mongoose.connect(connectionURL, { dbName: "test" })
-    console.log("mongoose connected successfully")
-  } catch (err) {
-    console.log("ERROR-mongoose_connection:", err)
-  }
-}
+// const connect = async () => {
+//   try {
+//     await mongoose.connect(connectionURL, { dbName: "test" })
+//     console.log("mongoose connected successfully")
+//   } catch (err) {
+//     console.log("ERROR-mongoose_connection:", err)
+//   }
+// }
 
-connect()
+// connect()
