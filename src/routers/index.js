@@ -7,7 +7,7 @@ const routers = express.Router()
 routers.get("/", (req, res) => {
   res.send("Hello World")
 })
-routers.use("/users", userRouter)
-routers.use("/tasks", taskRouter)
+// routers.use("/users", userRouter)
+// routers.use("/tasks", taskRouter)
 
 module.exports = routers
