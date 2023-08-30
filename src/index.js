@@ -1,6 +1,6 @@
 const express = require("express")
 // require("./db/mongoose")
-const routers = require("./routers")
+// const routers = require("./routers")
 // const mongoose = require("mongoose")
 
 require("dotenv").config()
@@ -20,7 +20,10 @@ const app = express()
 const PORT = process.env.PORT || 3000
 
 app.use(express.json())
-app.use(routers)
+app.get("/", (req, res) => {
+  res.send("hello world")
+})
+// app.use(routers)
 
 // connect()
 
