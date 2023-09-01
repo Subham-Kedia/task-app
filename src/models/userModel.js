@@ -5,40 +5,46 @@ const { isEmail } = require("validator")
 require("dotenv").config()
 const Task = require("./taskModel")
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    unique: true,
-    required: true,
-    trim: true,
-    lowercase: true,
-    validate(value) {
-      if (!isEmail(value)) {
-        throw new Error("Invalid Email")
-      }
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      trim: true,
     },
-  },
-  password: {
-    type: String,
-    required: true,
-    minLength: 7,
-  },
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true,
+    email: {
+      type: String,
+      unique: true,
+      required: true,
+      trim: true,
+      lowercase: true,
+      validate(value) {
+        if (!isEmail(value)) {
+          throw new Error("Invalid Email")
+        }
       },
     },
-  ],
-}, {
-  timestamps: true
-})
+    password: {
+      type: String,
+      required: true,
+      minLength: 7,
+    },
+    avatar: {
+      type: Buffer,
+    },
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+)
 
 userSchema.virtual("tasks", {
   ref: "Task",
@@ -52,6 +58,11 @@ userSchema.methods.toJSON = function () {
 
   delete userObject.password
   delete userObject.tokens
+  delete userObject.__v
+  if (userObject.avatar) {
+    delete userObject.avatar
+    userObject.avatar = `${process.env.HOST_URL}/users/${userObject._id}/profileImage`
+  }
 
   return userObject
 }

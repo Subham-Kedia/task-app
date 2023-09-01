@@ -1,7 +1,10 @@
 const express = require("express")
+const httpStatus = require("http-status")
 const userRouter = new express.Router()
 const User = require("../models/userModel")
 const auth = require("../middleware/auth")
+const upload = require("../middleware/upload")
+const { BaseError } = require("../middleware/errorHandler")
 
 userRouter.post("/signup", async (req, res) => {
   const { email, name, password } = req.body
@@ -86,6 +89,30 @@ userRouter.delete("/delete", auth, async (req, res) => {
       .send({ id: req.user._id, message: "User deleted successfully" })
   } catch (err) {
     res.status(400).send(err.message)
+  }
+})
+
+userRouter.post("/upload", auth, upload.single("avatar"), async (req, res) => {
+  try {
+    req.user.avatar = req.file.buffer
+    await req.user.save()
+    res
+      .status(200)
+      .send({ user: req.user, message: "image uploaded successfully" })
+  } catch (err) {
+    throw new BaseError(httpStatus.BAD_REQUEST, err.message)
+  }
+})
+
+userRouter.get("/:id/profileImage", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+    if (!user || !user.avatar)
+      throw new BaseError(httpStatus.NOT_FOUND, "image not found")
+    res.set("Content-Type", "image/jpg")
+    res.send(user.avatar)
+  } catch (err) {
+    throw new BaseError(httpStatus.INTERNAL_SERVER_ERROR, err.message)
   }
 })
 
