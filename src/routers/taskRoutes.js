@@ -59,7 +59,6 @@ taskRouter.put("/:id", auth, async (req, res) => {
   if (!isValidOperation) res.status(400).send({ message: "invalid Request" })
   try {
     const task = await Task.findOne({ _id: req.params.id, owner: req.user._id })
-    console.log(task)
     updates.forEach((update) => {
       task[update] = req.body[update]
     })

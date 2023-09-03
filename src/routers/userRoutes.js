@@ -14,15 +14,15 @@ userRouter.post("/signup", async (req, res) => {
       await user.save()
       const token = await user.generateAuthToken()
       res
-        .status(200)
+        .status(201)
         .send({ user, token, message: "Successfully created User" })
     } catch (err) {
-      res.status(400).send({ message: err.message })
+      throw new BaseError(httpStatus.BAD_REQUEST, err.message)
     }
-  } else res.status(400).send({ message: "Details Missing" })
+  } else throw new BaseError(httpStatus.BAD_REQUEST, "Details Missing")
 })
 
-userRouter.post("/login", async (req, res) => {
+userRouter.post("/login", async (req, res, next) => {
   const { email, password } = req.body
   if (email && password) {
     try {
@@ -33,12 +33,12 @@ userRouter.post("/login", async (req, res) => {
       const token = await user.generateAuthToken()
       res.status(200).send({ user, token })
     } catch (err) {
-      res.status(400).send({ message: err.message })
+      next(err)
     }
-  } else res.status(400).send({ message: "Credentials Missing" })
+  } else throw new BaseError(httpStatus.BAD_REQUEST, "Invalid Credentials")
 })
 
-userRouter.get("/logout", auth, async (req, res) => {
+userRouter.get("/logout", auth, async (req, res, next) => {
   try {
     req.user.tokens = req.user.tokens.filter(
       (token) => token.token !== req.token
@@ -47,11 +47,11 @@ userRouter.get("/logout", auth, async (req, res) => {
 
     res.status(200).send({ message: "successfully logged out" })
   } catch (err) {
-    res.status(400).send({ message: err.message })
+    next(err)
   }
 })
 
-userRouter.patch("/:id", auth, async (req, res) => {
+userRouter.patch("/:id", auth, async (req, res, next) => {
   const updates = Object.keys(req.body)
   const allowedUpdates = ["name", "password"]
   const isValidOperation = updates.every((update) =>
@@ -64,47 +64,52 @@ userRouter.patch("/:id", auth, async (req, res) => {
     updates.forEach((update) => {
       req.user[update] = req.body[update]
     })
-    const result = await req.user.save()
+    await req.user.save()
     res
       .status(200)
       .send({ user: req.user, message: "user updated successfully" })
   } catch (err) {
-    res.status(400).send({ message: err.message })
+    next(err)
   }
 })
 
-userRouter.get("/getProfile", auth, async (req, res) => {
+userRouter.get("/getProfile", auth, async (req, res, next) => {
   try {
     res.status(200).send({ user: req.user, message: "User Profile" })
   } catch (err) {
-    res.status(400).send(err.message)
+    next(err)
   }
 })
 
-userRouter.delete("/delete", auth, async (req, res) => {
+userRouter.delete("/delete", auth, async (req, res, next) => {
   try {
     await req.user.deleteOne()
     res
       .status(200)
       .send({ id: req.user._id, message: "User deleted successfully" })
   } catch (err) {
-    res.status(400).send(err.message)
+    next(err)
   }
 })
 
-userRouter.post("/upload", auth, upload.single("avatar"), async (req, res) => {
-  try {
-    req.user.avatar = req.file.buffer
-    await req.user.save()
-    res
-      .status(200)
-      .send({ user: req.user, message: "image uploaded successfully" })
-  } catch (err) {
-    throw new BaseError(httpStatus.BAD_REQUEST, err.message)
+userRouter.post(
+  "/upload",
+  auth,
+  upload.single("avatar"),
+  async (req, res, next) => {
+    try {
+      req.user.avatar = req.file.buffer
+      await req.user.save()
+      res
+        .status(200)
+        .send({ user: req.user, message: "image uploaded successfully" })
+    } catch (err) {
+      next(err)
+    }
   }
-})
+)
 
-userRouter.get("/:id/profileImage", async (req, res) => {
+userRouter.get("/:id/profileImage", async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id)
     if (!user || !user.avatar)
@@ -112,7 +117,7 @@ userRouter.get("/:id/profileImage", async (req, res) => {
     res.set("Content-Type", "image/jpg")
     res.send(user.avatar)
   } catch (err) {
-    throw new BaseError(httpStatus.INTERNAL_SERVER_ERROR, err.message)
+    next(err)
   }
 })
 

@@ -10,11 +10,5 @@ routers.get("/", (req, res) => {
 })
 routers.use("/users", userRouter)
 routers.use("/tasks", taskRouter)
-routers.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname,"../pages/login.html"))
-})
-routers.get("/verify-fb-login", (req, res) => {
-  res.sendFile(path.join(__dirname,"../pages/verify.html"))
-})
 
 module.exports = routers

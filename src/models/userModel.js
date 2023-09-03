@@ -2,8 +2,10 @@ const mongoose = require("mongoose")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const { isEmail } = require("validator")
-require("dotenv").config()
+const httpStatus = require("http-status")
+
 const Task = require("./taskModel")
+const { BaseError } = require("../middleware/errorHandler")
 
 const userSchema = new mongoose.Schema(
   {
@@ -79,9 +81,14 @@ userSchema.methods.generateAuthToken = async function () {
 
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email })
-  if (!user) throw new Error("No user with this email id exist")
+  if (!user)
+    throw new BaseError(
+      httpStatus.BAD_REQUEST,
+      "No user with this email id exist"
+    )
+
   const isMatch = await bcrypt.compare(password, user.password)
-  if (!isMatch) throw new Error("Invalid Password!")
+  if (!isMatch) throw new BaseError(httpStatus.BAD_REQUEST, "Invalid Password!")
   return user
 }
 
